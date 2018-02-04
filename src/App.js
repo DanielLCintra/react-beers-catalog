@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import {Navbar, NavItem, Nav, Table } from 'react-bootstrap';
+import React, { Component } from 'react'
+import {Navbar, NavItem, Nav, Table } from 'react-bootstrap'
 import _ from 'lodash'
 import http from './services/http'
 
@@ -14,22 +14,22 @@ class App extends Component {
   }
 
   updateValue(inputName, event) {
-    const field = {};
-    field[inputName] = event.target.value;
+    const field = {}
+    field[inputName] = event.target.value
     this.setState(field);
   }
 
   componentDidMount() {
     const vThis = this;
-    http.get().then(res => {
+    http.get('search').then(res => {
       vThis.setState({beersList: res.data.data})
     })
   }
 
   filteredList(){
 
-    var list = this.state.beersList;
-    var filter = this.state.search;
+    var list = this.state.beersList
+    var filter = this.state.search
 
     if (_.isEmpty(filter)) {
       return list;
@@ -42,13 +42,17 @@ class App extends Component {
     return result
   }
 
+  ConvertYesNo(value){
+    return value === 'Y' ? 'Yes' : 'No' 
+  }
+
   render() {
 
     var filteredList = this.filteredList();
 
     return (
       <div className="container">
-      <Navbar>
+      <Navbar inverse>
         <Navbar.Header>
           <Navbar.Brand>
             <a href="#home">Beers Catalog</a>
@@ -68,8 +72,8 @@ class App extends Component {
      
       <Table striped bordered condensed hover responsive>
         <thead>
-          <tr>
-            <th>Id</th>
+          <tr className="text-center">
+            <th>#</th>
             <th>Name</th>
             <th>Description</th>
             <th>Is Organic?</th>
@@ -82,7 +86,7 @@ class App extends Component {
                 <td>{beer.id}</td>
                 <td>{beer.name}</td>
                 <td>{beer.description}</td>
-                <td>{beer.isOrganic}</td>
+                <td>{this.ConvertYesNo(beer.isOrganic)}</td>
               </tr>
             ))
           }
