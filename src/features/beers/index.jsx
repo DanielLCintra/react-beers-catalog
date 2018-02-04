@@ -12,30 +12,27 @@ export default class Beers extends Component {
       	{
           id: 'id',
           name:'Id',
-          ordem: 0,
-          type: 'text',
-          visible: true
+          ordem: 0
       	},
       	{
           id: 'name',
           name:'Name',
-          ordem: 1,
-          type: 'text',
-          visible: true
+          ordem: 1
       	},
       	{
           id: 'description',
           name:'Description',
-          ordem: 2,
-          type: 'text',
-          visible: true
+          ordem: 2
       	},
+        {
+          id: 'abv',
+          name:'ABV',
+          ordem: 3
+        },
       	{
           id: 'isOrganic',
           name:'Is Organic?',
-          ordem: 3,
-          type: 'cpf',
-          visible: true
+          ordem: 4
       	}
       ]
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table } from 'react-bootstrap'
+import { Table, DropdownButton, MenuItem } from 'react-bootstrap'
 import _ from 'lodash'
 
 export default class DTable extends Component {
@@ -8,10 +8,15 @@ export default class DTable extends Component {
     super();
     this.state = {
       list: [],
-      search: '',
-      columns: []
-
+      columns: [],
+      orderBy: 'descricao',
+      order: 'asc',
+      filter: '',
+      reverse: 1,
+      filter_option: 'name',
+      filter_selected: 'name'
     }
+    this.sortBy = this.sortBy.bind(this);
   }
 
   updateValue(inputName, event) {
@@ -21,39 +26,71 @@ export default class DTable extends Component {
   }
 
   filteredList(){
-    var list = this.props.data
-    var filter = this.state.search
+
+    const list = _.orderBy(this.props.data, this.state.orderBy, this.state.order)
+    
+    var filter = this.state.filter.toString().toLowerCase()
 
     if (_.isEmpty(filter)) {
       return list;
     }
 
     var result = _.filter(list, repo => {
-      return repo.name.indexOf(filter) >= 0
+      const item = repo[this.state.filter_option] === undefined ? '' : repo[this.state.filter_option] 
+      return item.toString().toLowerCase().indexOf(filter) >= 0
     })
 
     return result
   }
 
-  ConvertYesNo(value){
-    return value === 'Y' ? 'Yes' : 'No' 
+  sortBy(sortKey,orderBy) {
+    this.setState({orderBy: orderBy})    
+    if (this.state.order === sortKey) {
+      this.setState({order: 'desc'})
+      this.setState({reverse: -1})
+    }else{
+      this.setState({order: 'asc'})
+      this.setState({reverse: 1})
+    }
+  }
+
+  set_filter_prop(c){
+    this.setState({filter_option: c.id})
+    this.setState({filter_selected: c.id})
   }
 
   render(){
     
     const filteredList = this.filteredList();
-
     const columns = this.props.columns;
 
     return (
       <div>
-        <input className="form-control" type="text" id="search" value={this.state.search} onChange={this.updateValue.bind(this, 'search')} placeholder="Search"/><br/>
+        <div className="input-group">
+          <div className="input-group-btn">
+            <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              Filter: { this.state.filter_selected}
+            </button>
+            <DropdownButton bsStyle='default' title='' key={1} id={`dropdown-basic-1`}>
+              {
+                columns.map((c) => (
+                  <MenuItem key={c.ordem} eventKey={c.ordem} onClick={this.set_filter_prop.bind(this,c)}>{ c.name }</MenuItem>
+                ))
+              }
+            </DropdownButton>
+          </div>
+          <input className="form-control" type="text" id="filter" value={this.state.filter} onChange={this.updateValue.bind(this, 'filter')} placeholder="Search"/>
+        </div><br/>
         <Table striped bordered condensed hover >
           <thead>
             <tr className="text-center">
             {
               columns.map((column) =>(
-                <th>{column.name}</th>
+                <th key={column.ordem}>
+                  {column.name}
+
+                  <i className="fa fa-sort-amount-asc" onClick={this.sortBy.bind(this,'asc',column.id)}/>
+                </th>
               ))
             }
             </tr>
@@ -64,7 +101,7 @@ export default class DTable extends Component {
                 <tr key={d.id}>
                   {
                     columns.map((c) => (
-                      <td>{d[c.id]}</td>
+                      <td key={c.ordem}>{d[c.id]}</td>
                     ))
                   }
                 </tr>  
