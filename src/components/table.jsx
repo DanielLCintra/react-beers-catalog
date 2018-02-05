@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Table, DropdownButton, MenuItem } from 'react-bootstrap'
 import _ from 'lodash'
+import PubSub from 'pubsub-js'
 
 export default class DTable extends Component {
   
@@ -9,7 +10,7 @@ export default class DTable extends Component {
     this.state = {
       list: [],
       columns: [],
-      orderBy: 'descricao',
+      orderBy: 'name',
       order: 'asc',
       filter: '',
       reverse: 1,
@@ -59,6 +60,10 @@ export default class DTable extends Component {
     this.setState({filter_selected: c.id})
   }
 
+  showDetails(data){
+    PubSub.publish('showBeerDetails', data)
+  }
+
   render(){
     
     const filteredList = this.filteredList();
@@ -81,15 +86,13 @@ export default class DTable extends Component {
           </div>
           <input className="form-control" type="text" id="filter" value={this.state.filter} onChange={this.updateValue.bind(this, 'filter')} placeholder="Search"/>
         </div><br/>
-        <Table striped bordered condensed hover >
+        <Table striped bordered condensed hover responsive>
           <thead>
             <tr className="text-center">
             {
               columns.map((column) =>(
-                <th key={column.ordem}>
-                  {column.name}
-
-                  <i className="fa fa-sort-amount-asc" onClick={this.sortBy.bind(this,'asc',column.id)}/>
+                <th key={column.ordem} >
+                  {column.name}   <i className="fa fa-sort-amount-asc" onClick={this.sortBy.bind(this,'asc',column.id)}/>
                 </th>
               ))
             }
@@ -98,7 +101,7 @@ export default class DTable extends Component {
           <tbody>
             {
               filteredList.map((d) => (
-                <tr key={d.id}>
+                <tr key={d.id} onClick={this.showDetails.bind(this, d)}>
                   {
                     columns.map((c) => (
                       <td key={c.ordem}>{d[c.id]}</td>
