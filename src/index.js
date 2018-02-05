@@ -10,7 +10,7 @@ import Dashboard from './features/dashboard/index.jsx'
 
 ReactDOM.render(
 	(
-	    <Router>
+	    <Router history={Router.hashHistory}>
       		<App>
         		<Switch>
 	          		<Route exact path="/" component={Dashboard} />
