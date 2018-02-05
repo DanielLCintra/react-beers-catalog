@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { PageHeader } from 'react-bootstrap'
 import DTable from '../../components/table.jsx'
 import http from '../../services/http'
+import _ from 'lodash'
 
 export default class Beers extends Component {
   constructor (){
@@ -12,30 +13,22 @@ export default class Beers extends Component {
       	{
           id: 'id',
           name:'Id',
-          ordem: 0,
-          type: 'text',
-          visible: true
+          ordem: 0
       	},
       	{
           id: 'name',
           name:'Name',
-          ordem: 1,
-          type: 'text',
-          visible: true
+          ordem: 1
       	},
       	{
           id: 'description',
           name:'Description',
-          ordem: 2,
-          type: 'text',
-          visible: true
+          ordem: 2
       	},
       	{
-          id: 'isOrganic',
-          name:'Is Organic?',
-          ordem: 3,
-          type: 'cpf',
-          visible: true
+          id: 'styleCategory',
+          name:'Categoria',
+          ordem: 3
       	}
       ]
     }
@@ -50,7 +43,13 @@ export default class Beers extends Component {
   componentDidMount() {
     const vThis = this;
     http.get('styles').then(res => {
-      vThis.setState({list: res.data.data})
+      const stylesList = res.data.data
+
+      _.forEach(stylesList, (style) => {
+        style.styleCategory = style.category.name
+      })
+      
+      vThis.setState({list: stylesList})
     })
   }
 
