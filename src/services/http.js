@@ -6,7 +6,7 @@ const q = 'Two_Hearted_Ale'
 const availableId = 1
 
 const http = axios.create({
-    baseURL: `http://api.brewerydb.com/v2`,
+    baseURL: `https://api.brewerydb.com/v2`,
     params: {
     	q,
     	type,
